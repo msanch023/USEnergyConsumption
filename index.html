@@ -2,16 +2,33 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Interactive Energy Map</title>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
-    <style>
-        /* Style the map container */
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-    </style>
+    <title>D3 Map Visualization</title>
+    <link href="style.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-<div id="map"></div>
-<script src="script.js"></script>
+    <div id="pageTitle">Energy Consumption Heatmap (1980 - 2020)</div>
+    
+    <div id="info" style="position: absolute; display: none; background: rgba(255, 255, 255, 0.881); pointer-events: none; padding: 10px; border-radius: 5px;"></div>
+    <div id="controls" style="position: absolute; background: rgba(255, 255, 255, 0.391); top: 10px; left: 10px; border-radius: 5px;">
+        <label for="yearSlider">Year: <span id="yearLabel"></span></label>
+        <input type="range" id="yearSlider" min="1980" max="2020" value="1980" step="1">
+    </div>
+    <div id="textbox" style="position: absolute; bottom: 0px; left: 10px; background: rgba(255, 255, 255, 0.391); padding: 10px; border-radius: 5px;">
+        <!-- Your text or other content here -->
+        Countries missing in some years because <br>
+         they were not yet established
+    </div>
+    <div id="textbox" style="position: absolute; top: 76px; left: 10px; background: rgba(255, 255, 255, 0.391); padding: 10px; border-radius: 5px;">
+        <!-- Your text or other content here -->
+        Move the slider to change the year
+    </div>
+    <div id="textbox" style="position: absolute; top: 35px; left: 10px; background: rgba(255, 255, 255, 0.391); padding: 10px; border-radius: 5px;">
+        <!-- Your text or other content here -->
+        Click on a country to view its energy consumption information
+    </div>
+    
+    <svg></svg>
+    <script src="script.js"></script>
 </body>
 </html>

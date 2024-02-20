@@ -1,0 +1,59 @@
+/* Style the SVG container */
+svg {
+    width: 100vw; /* 100% of the viewport width */
+    height: 100vh; /* 100% of the viewport height */
+    display: block;
+    margin: auto;
+    background-color: #89CFF0; /* Light grey background */
+  }
+  
+  /* Style for country paths */
+  path {
+    stroke: #000000; /* White border around countries */
+    stroke-width: 1;
+  }
+  
+  /* Style for the info box */
+  #info {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  #controls {
+    position: absolute;
+    top: 10px; /* Adjust as needed for spacing from the top */
+    left: 10px; /* Adjust as needed for spacing from the left */
+    z-index: 10; /* Ensure controls are above the map */
+}
+
+/* Ensure the entire body is a flex container to center the title container */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+#mapContainer {
+  position: relative; /* Establishes a new positioning context */
+  width: 100%; /* Adjust width as necessary */
+  height: 100vh; /* Adjust height as necessary, e.g., full viewport height */
+}
+
+#pageTitle {
+  position: absolute; /* Position absolutely within #mapContainer */
+  top: 0; /* Align to the top edge of the map container */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Offset by half its width to truly center */
+  font-size: 24px; /* Adjust font size as needed */
+  color: #000000; /* Adjust text color as needed */
+  background-color: rgba(255, 255, 255, 0.391); /* Optional: Adds background for better readability */
+  padding: 5px 10px; /* Adjust padding as needed */
+  border-radius: 5px; /* Optional: Adds rounded corners */
+}
+

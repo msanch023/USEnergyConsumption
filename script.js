@@ -1,47 +1,134 @@
-mapboxgl.accessToken = 'pk.eyJ1IjoibWFzMDIzIiwiYSI6ImNsc2txcnZpODA2c24ycW80eGp5cGZhaHcifQ.W8g17Taw2vODdOnvz0UksQ';
-var map = new mapboxgl.Map({
-    container: 'map', // container ID
-    style: 'mapbox://styles/mapbox/dark-v11', // style URL
-    center: [-98.5795, 39.8283], // starting position [lng, lat]
-    zoom: 3 // starting zoom
+// Set the dimensions and projection for your map
+const width = 1000, height = 1000;
+const projection = d3.geoNaturalEarth1().scale(width / 4).translate([width / 1.45, height / 2.3]);
+const path = d3.geoPath().projection(projection);
+
+// Select the SVG element and set its dimensions
+const svg = d3.select("svg").attr("width", width).attr("height", height);
+function resize() {
+  const width = window.innerWidth, height = window.innerHeight;
+  const scale = Math.min(width) / 6;
+  projection.scale(scale).translate([width / 2, height / 1.79]);
+  svg.attr('width', width).attr('height', height);
+  svg.selectAll('path').attr('d', path);
+}
+window.addEventListener('resize', resize);
+
+d3.json("data.json").then(function(data) {
+  window.geojson = data;
+  const initialYear = parseFloat(d3.select('#yearSlider').node().value);
+  updateHeatmap(initialYear); // Call with initial year
 });
 
-map.on('load', function () {
-    // After the map loads, add your data source and create a layer to display it
-    map.addSource('states', {
-        type: 'geojson',
-        data: '/Users/marcosanchez/energyconsumption/data.json' // Path to your GeoJSON data
-    });
 
-    map.addLayer({
-        'id': 'states-heat',
-        'type': 'fill',
-        'source': 'states',
-        'layout': {},
-        'paint': {
-            'fill-color': [
-                'interpolate',
-                ['linear'],
-                ['get', 'energyConsumption'], // Replace with your property
-                0, '#F2F12D',
-                5000, '#EED322',
-                10000, '#E6B71E',
-                20000, '#DA9C20',
-                30000, '#CA8323',
-                40000, '#B86B25',
-                50000, '#A25626',
-                60000, '#8B4225',
-                70000, '#723122'
-            ],
-            'fill-opacity': 0.75
+
+
+// Define a global color scale for the heatmap
+let colorArray = ["#f7fcf5","#e8f6e3","#d3eecd","#b7e2b1","#97d494","#73c378","#4daf62","#2f984f","#157f3b","#036429","#00441b"];
+
+// Setup your color scale
+let colorScale = d3.scaleLinear()
+    .domain([-0.25, -0.2, -0.15, -0.1, -0.05, 0.0, 0.33333333, 0.66666667, 1.0, 5.0, 9.0, 13.0])
+    .range(colorArray);
+
+
+
+function updateHeatmap(selectedYear) {
+  const filteredData = geojson.features.filter(d => Math.round(d.properties.year) === selectedYear);
+
+  const consumptionValues = filteredData.map(d => d.properties.total_consumption_zscore).filter(v => v != null);
+  const colorDomain = d3.extent(consumptionValues);
+  colorScale.domain([-0.25, -0.2, -0.15, -0.1, -0.05, 0.0, 0.33333333, 0.66666667, 1.0, 5.0, 9.0, 13.0]);
+
+  // Bind data with key function for object constancy
+  const countries = svg.selectAll("path.country")
+    .data(filteredData, d => d.properties.gu_a3);
+
+  // Enter + update selection
+  countries.enter().append("path")
+    .merge(countries)
+    .attr("class", "country")
+    .attr("d", path)
+    .attr("fill", d => colorScale(d.properties.total_consumption_zscore))
+    .on("click", function(event, d) {
+      // Tooltip display logic
+      event.stopPropagation();
+        var selectedYear = parseFloat(d3.select('#yearSlider').node().value); // Parse the selected year to float
+      
+        // Assuming your geojson variable is already loaded with the country and energy data
+        var countryData = geojson.features.find(feature => 
+          feature.properties.sovereignt === d.properties.sovereignt && 
+          feature.properties.year === selectedYear);
+      
+        var [x, y] = d3.pointer(event, svg.node());
+
+        var tempTooltip = d3.select('#info')
+        .style('left', x + 'px')
+        .style('top', y + 'px')
+        .style('opacity', 0) // Make it invisible or position it off-screen
+        .style('display', 'block');
+
+        var tooltipWidth = tempTooltip.node().getBoundingClientRect().width;
+        var tooltipHeight = tempTooltip.node().getBoundingClientRect().height;
+
+        if (x + tooltipWidth > window.innerWidth) {
+          x -= tooltipWidth; // Adjust to the left of the cursor
         }
+        if (y + tooltipHeight > window.innerHeight) {
+          y -= tooltipHeight; // Adjust above the cursor
+        }
+
+        tempTooltip.style('left', x + 'px')
+        .style('top', y + 'px')
+        .style('opacity', 1) // Make it visible
+        
+        d3.select('#info')
+          .style('left', x + 'px')
+          .style('top', y + 'px')
+          .style('display', 'block')
+          .html(`Country: ${d.properties.sovereignt}<br>Year: ${selectedYear}<br>` +
+                `Biofuel Consumption: ${countryData ? countryData.properties.biofuel_consumption || 'N/A' : 'N/A'}<br>` +
+                `Coal Consumption: ${countryData ? countryData.properties.coal_consumption || 'N/A' : 'N/A'}<br>` + 
+                `Fossil Fuel Consumption: ${countryData ? countryData.properties.fossil_fuel_consumption || 'N/A' : 'N/A'}<br>` +
+                `Gas Consumption: ${countryData ? countryData.properties.gas_consumption || 'N/A' : 'N/A'}<br>` +
+                `Hydro Consumption: ${countryData ? countryData.properties.hydro_consumption || 'N/A' : 'N/A'}<br>` +
+                `Nuclear Consumption: ${countryData ? countryData.properties.nuclear_consumption || 'N/A' : 'N/A'}<br>` +
+                `Oil Consumption: ${countryData ? countryData.properties.oil_consumption || 'N/A' : 'N/A'}<br>` +
+                `Solar Consumption: ${countryData ? countryData.properties.solar_consumption || 'N/A' : 'N/A'}<br>` +
+                `Wind Consumption: ${countryData ? countryData.properties.wind_consumption || 'N/A' : 'N/A'}<br><br>` +
+                `Low Carbon Consumption: ${countryData ? countryData.properties.low_carbon_consumption || 'N/A' : 'N/A'}<br>` +
+                `Primary Energy Consumption: ${countryData ? countryData.properties.primary_energy_consumption || 'N/A' : 'N/A'}<br>` +
+                `Renewables Consumption: ${countryData ? countryData.properties.renewables_consumption || 'N/A' : 'N/A'}<br>` +
+                `Other Renewable Consumption: ${countryData ? countryData.properties.other_renewable_consumption || 'N/A' : 'N/A'}<br>` +
+                `Total Consumption: ${countryData ? countryData.properties.total_consumption || 'N/A' : 'N/A'}<br>` + 
+                `Total Consumption Z-Score: ${countryData ? countryData.properties.total_consumption_zscore || 'N/A' : 'N/A'}`);
     });
+
+  // Exit selection
+  countries.exit().remove();
+}
+
+
+
+
+// Hide the tooltip when clicking on the SVG (but not on a country)
+svg.on("click", function(event) {
+  // Check if the clicked element is not a country path
+  if (!event.target.closest("path")) {
+    d3.select('#info').style('display', 'none'); // Hide the tooltip
+  }
 });
 
-// Example of adding a click event to show a popup
-map.on('click', 'states-heat', function (e) {
-    new mapboxgl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(`<h3>${e.features[0].properties.name}</h3><p>Energy Consumption: ${e.features[0].properties.energyConsumption}</p>`)
-        .addTo(map);
+
+
+
+d3.select('#yearSlider').on('input', function() {
+  const year = parseFloat(this.value);
+  d3.select('#yearLabel').text(year); // Update year label
+  updateHeatmap(year); // Redraw map for selected year
 });
+
+// After data is loaded
+const initialYear = parseInt(d3.select('#yearSlider').attr("value"), 10);
+d3.select('#yearLabel').text(initialYear); // Set initial year label text
+updateHeatmap(initialYear); // Initialize heatmap with the initial year
