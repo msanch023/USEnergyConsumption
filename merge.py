@@ -6,7 +6,7 @@ from scipy.stats import zscore
 
 energy = pd.read_csv('/Users/marcosanchez/energyconsumption/owid-energy-data.csv')
 
-worldjson = gpd.read_file('/Users/marcosanchez/energyconsumption/temp.json')
+worldjson = gpd.read_file('/Users/marcosanchez/energyconsumption/geo.json')
 
 
 energy[energy['country'] == 'USSR'] = energy[(energy['country'] == 'USSR') & (energy['year'] >= 1980) & (energy['year'] <= 1984)]
