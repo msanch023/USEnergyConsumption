@@ -8,28 +8,22 @@
 </head>
 <body>
     <div id="pageTitle">Energy Consumption Heatmap (1980 - 2020)</div>
-<a href="writeup.html" class="writeup-link">Project Writeup</a>
-
-    
+    <a href="writeup.html" class="writeup-link">Project Writeup</a>
     <div id="info" style="position: absolute; display: none; background: rgba(255, 255, 255, 0.881); pointer-events: none; padding: 10px; border-radius: 5px;"></div>
     <div id="controls" style="position: absolute; background: rgba(255, 255, 255, 0.391); top: 10px; left: 10px; border-radius: 5px;">
         <label for="yearSlider">Year: <span id="yearLabel"></span></label>
         <input type="range" id="yearSlider" min="1980" max="2020" value="1980" step="1">
     </div>
     <div id="textbox" style="position: absolute; bottom: 0px; left: 10px; background: rgba(255, 255, 255, 0.391); padding: 10px; border-radius: 5px;">
-        <!-- Your text or other content here -->
         Countries missing in some years because <br>
          they were not yet established
     </div>
     <div id="textbox" style="position: absolute; top: 76px; left: 10px; background: rgba(255, 255, 255, 0.391); padding: 10px; border-radius: 5px;">
-        <!-- Your text or other content here -->
         Move the slider to change the year
     </div>
     <div id="textbox" style="position: absolute; top: 35px; left: 10px; background: rgba(255, 255, 255, 0.391); padding: 10px; border-radius: 5px;">
-        <!-- Your text or other content here -->
         Click on a country to view its energy consumption information
     </div>
-    
     <svg></svg>
     <script src="script.js"></script>
 </body>
