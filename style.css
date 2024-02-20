@@ -1,19 +1,18 @@
-/* Style the SVG container */
+/*SVG Styling*/
 svg {
-    width: 100vw; /* 100% of the viewport width */
-    height: 100vh; /* 100% of the viewport height */
+    width: 100vw;
+    height: 100vh;
     display: block;
     margin: auto;
-    background-color: #89CFF0; /* Light grey background */
+    background-color: #89CFF0;
   }
   
-  /* Style for country paths */
   path {
-    stroke: #000000; /* White border around countries */
+    stroke: #000000;
     stroke-width: 1;
   }
   
-  /* Style for the info box */
+  /* Tooltip Style */
   #info {
     position: absolute;
     top: 10px;
@@ -25,12 +24,11 @@ svg {
   }
   #controls {
     position: absolute;
-    top: 10px; /* Adjust as needed for spacing from the top */
-    left: 10px; /* Adjust as needed for spacing from the left */
-    z-index: 10; /* Ensure controls are above the map */
+    top: 10px;
+    left: 10px;
+    z-index: 10;
 }
 
-/* Ensure the entire body is a flex container to center the title container */
 body {
   display: flex;
   flex-direction: column;
@@ -40,20 +38,62 @@ body {
 }
 
 #mapContainer {
-  position: relative; /* Establishes a new positioning context */
-  width: 100%; /* Adjust width as necessary */
-  height: 100vh; /* Adjust height as necessary, e.g., full viewport height */
+  position: relative;
+  width: 100%;
+  height: 100vh;
 }
 
 #pageTitle {
-  position: absolute; /* Position absolutely within #mapContainer */
-  top: 0; /* Align to the top edge of the map container */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Offset by half its width to truly center */
-  font-size: 24px; /* Adjust font size as needed */
-  color: #000000; /* Adjust text color as needed */
-  background-color: rgba(255, 255, 255, 0.391); /* Optional: Adds background for better readability */
-  padding: 5px 10px; /* Adjust padding as needed */
-  border-radius: 5px; /* Optional: Adds rounded corners */
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: #000000;
+  background-color: rgba(255, 255, 255, 0.391);
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
+.writeup-link {
+  position: absolute;
+  top: 5.5%;
+  color: #007bff;
+  background-color: rgba(255, 255, 255, 0.391);
+  border-radius: 5px;
+  padding: 5px 10px;
+  text-decoration: none;
+  font-weight: bold;
+
+}
+
+.writeup-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  line-height: 1.6;
+  margin: 30px;
+  padding: 0;
+  background-color: #ffffff;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+header h1 {
+  color: #000000;
+}
+
+section h2 {
+  color: #000000;
+}
+
+p {
+  margin-bottom: 20px;
+}

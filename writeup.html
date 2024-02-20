@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Write-up</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <h1>Energy Consumption Heatmap Writeup</h1>
+    </header>
+    <main>
+        <section class="introduction">
+            <h2>Introduction</h2>
+            <p>For this project I decided to go with an interactive heatmap of the world. 
+                The goal of this interactive visualization is to convey different types of energy usage information to the user.
+            </p>
+        </section>
+        <section class="design-description">
+            <h2>Design and Project Description</h2>
+            <p>
+                The visualization features the ability to click on any countries that have been established in the time that the user picked using the slider in the top left corner. By clicking on the country, a tooltip would appear about the different types and amounts of energy used by that country that year, measured in terawatt hours. The scale of the heatmap was created using the zscore of the total energy usage by each country. The reason I decided to use the zscore of each country was because some countries, mainly China and India, had much higher total energy consumption compared to other countries. This resulted in the original heatmap not changing much for countries with lower energy usage, which is why I standardized the total energy usage. I also considered
+                energy usage per capita, but I ran into the same issue where super-populated countries, once again China and India, were the only ones changing with the heatmap. Originally, I was going to do just the United States and visualize the energy usage for each state, but I decided that it would be more interesting if I could
+                compare the energy usage for the entire world.
+            </p>
+        </section>
+        <section class="development-process">
+            <h2>Development Process</h2>
+            <p>
+                I decided to do this project alone, so I did everything. My development process was fairly simple on paper but ended up being much more educational and challenging. I am very happy with the amount I learned about web design and data cleaning with real-world data from this project.<br><br> Anyways, I started with just getting the map on the page. This included finding geojson data that would fit my requirements. I ultimately decided to pull my geojson data from this site: https://geojson-maps.ash.ms/. Once I had my geojson of the world, I had to deploy it to the site. This included loading the data using D3, creating the SVG, and making sure that the map would adapt to different screen sizes. Once I got that figured out, I added some colors and moved onto
+                creating the year slider. I had to do the year slider before I created the tooltip because there was data for each year. I created the year slider in my script.js file and implemented it in my index.html file. It was not too difficult. The only part that took a bit of time was making sure that the minimum year appeared when the webpage first loaded, which took a surprising amount of time<br><br> Next, I started with the tooltip. The goal with the tooltip was to display the energy usage data of the country that was clicked on. Originally, I wanted to make the tooltip appear when hovering over a country, but ultimately, I couldn't figure it out, so I decided to stick with clicks. Starting simple, I made the tool tip just show the name of the country and the year, which was fairly easy to implement. The difficult part was designing the interface and making the tooltip adjust to where the country was. For example, at first, when I clicked on Antartica, the tooltip would be cut off by the bottom of the screen. Once I got the map deployed along with a functional tooltip, it was time to clean the data.<br><br>This part took a decent
+                amount of time, but it didn't feel like anything too new since I have done plenty of data cleaning. The part I did enjoy about this was that I was finally working with real-world data that would be used on a project idea I had come up with. I didn't have to follow any instructions and could clean the data however I wanted.
+                The data cleaning started with importing the data set, which I got from https://github.com/owid/energy-data?tab=readme-ov-file#data-on-energy-by-our-world-in-data, and the geojson, which I found earlier. The first thing I did was filter the energy data to only include the countries with ISO codes present in the geojson file.
+                Next, I filtered the geojson file to only contain the country name, iso code, the filename for the country's individual geojson file, and the geometry information. Next, I filtered the energy data to only have the metrics that I was interested in; this included the usage information for the different types of energy, along with
+                the country name, ISO code, and year for the data. After that, I merged the two dataframes. Once I had merged the two dataframes, I had to create a total usage column, which the heatmap would use as its domain. At this point, I thought I had done enough to clean the data and exported the dataframe to a geojson file with energy usage information, but further down the road, I had to make several changes. First off, I discovered that most of the countries did not have recorded energy usage data until 1980. Because of this, I changed the minimum year from 1900 to 1980 on the year slider and filtered the merged dataframe to only include data from 1980 to 2020. This was discovered while I was adding the data to the tool tips. I found that for the majority of the countries, the data was shown as N/A before 1980. The next issue was quite interesting. When I was moving the slider around, I realized that before 1985, Russia was just missing; the map showed the ocean where Russia should have been. At first, I thought this was a glitch with the geojson file, but after manually looking through the data, I realized that the reason Russia was missing was because it used to be the USSR. When I fully understood what was going on, the geojson was created using the countries currently established, and I had filtered the energy data to only contain the iso codes of countries in the geojson data. This meant that Russia, whose energy data started in 1985, would only appear after 1984, and the USSR data in the energy data was lost since the USSR iso code was not present in the modern geojson data. To solve this, I first filtered the original energy data to only include USSR data from 1980 to 1984, and then I changed the ISO code for the USSR to RUS. This ensured that once the data went through the filtering, the USSR would be included under Russia. Lastly, for accuracy, I made sure that the name of the country in the tooltip was the USSR from 1980 to 1984.<br><br> Next is creating the tool tips. Originally, they were their own function, but once I got to implementing the heatmap, I simplified it to click actions within the heatmap function. Creating the tool tip and implementing it was the most difficult part of this project. I had to make sure that my data was being read correctly and that the data being displayed on the tooltip was filtered correctly by year. Next, I made sure that the tool tip didn't get cut off, like I mentioned earlier. After that, I had to make the tool tip appear where the mouse clicked and design the look of it in style.css. This sounds fairly simple, but understanding what was happening in the JS file and implementing it all took a ton of time, but it was very informative and interesting. Lastly, I added the heatmap. This was the second-most difficult task in the project, partially because of the issues I ran into with Russia and the USSR and partially because I couldn't get the colors to show up correctly. The reason the colors weren't showing
+                up correctly was because the heatmap and the tool tip were two different functions, and within the tool tip function, I drew the map. When I first created the heatmap, I redrew the map, and they were overriding each other and causing some weird effects. Once I realized the issue, I decided to merge the two of them so that
+                I would only have to load the map once, and they wouldn't override each other. The heatmap uses a series of greens, since I thought that made sense as the heatmap is about our green earth. There are eleven steps to the heatmaps domain, and most of them are for lower-consumption countries. Through working on this project, I realized that the vast majority of the countries on earth have very low energy usage. This was pretty much it for the script.js file, which was the overall most time-consuming but most
+                interesting part of this project. After this, I made sure everything showed up in the index.html file, including titles and informational sections. style.css already had everything that it needed to have.<br><br> Overall, the tools I used in this project include D3, Pandas, GeoPandas, Scipy, and Numpy, as well as HTML, CSS, and JavaScript. This project took around 10–15 hours and was overall very satisfying to work on.
+            </p>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <p>By Marco Sanchez<br><br>
+            mas023@ucsd.edu
+        </p>
+    </footer>
+</body>
+</html>

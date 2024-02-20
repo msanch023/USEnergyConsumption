@@ -35,5 +35,3 @@ merged['total_consumption_zscore'] = zscore(merged['total_consumption'])
 
 merged.to_file('data.json', driver = 'GeoJSON')
 
-print(merged['total_consumption_zscore'].sort_values(ascending=True))
-
